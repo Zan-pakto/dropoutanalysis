@@ -22,419 +22,193 @@ try {
     // Use default stats if DB connection fails
     $stats = [
         'total_students' => 2400,
-        'at_risk' => 4600,
+        'at_risk' => 460,
         'interventions' => 300
     ];
 }
+
+require_once 'includes/header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dropout Analysis System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                fontFamily: {
-                    sans: ['Space Grotesk', 'sans-serif'],
-                },
-                extend: {
-                    colors: {
-                        'primary': '#08141B',
-                        'secondary': '#11212D',
-                        'tertiary': '#233745',
-                        'accent': '#4A5C6A',
-                        'light': '#9BAAAB',
-                        'lighter': '#CCD0CF',
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-8px)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .hero-bg {
-            background-image: linear-gradient(rgba(8, 20, 27, 0.8), rgba(8, 20, 27, 0.8)), 
-                              url('https://images.unsplash.com/flagged/photo-1574097656146-0b43b7660cb6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-            background-size: cover;
-            background-position: center;
-        }
-        .stat-card {
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body class="bg-lighter font-sans bg-primary text-lighter font-space">
-    <!-- Navigation Bar -->
-    <nav class="bg-primary text-white shadow-lg">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-graduation-cap text-2xl text-accent mr-2"></i>
-                    <span class="font-semibold text-xl tracking-tight">DROPOUT ANALYSIS</span>
-                </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="text-light hover:text-white font-medium">Home</a>
-                    <a href="#" class="text-light hover:text-white font-medium">Analysis</a>
-                    <a href="#" class="text-light hover:text-white font-medium">Interventions</a>
-                    <a href="#" class="text-light hover:text-white font-medium">About Us</a>
-                    <?php if(isset($_SESSION['user_id'])): ?>
-                        <a href="dashboard.php" class="bg-accent hover:bg-tertiary px-4 py-2 rounded font-medium">Dashboard</a>
-                    <?php else: ?>
-                        <a href="login.php" class="bg-accent hover:bg-tertiary px-4 py-2 rounded font-medium">Login</a>
-                    <?php endif; ?>
-                </div>
-                <button class="md:hidden text-white focus:outline-none">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero-bg text-white py-24">
-        <div class="container mx-auto px-6 text-center">
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">Turning Dropouts into Comebacks</h1>
-            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-light leading-relaxed">
-                "Dropouts aren't numbers; they're stories unwritten, talents untapped, and hopes unfulfilled."
-            </p>
-            <a href="#analysis" class="bg-accent hover:bg-tertiary text-white font-bold py-3 px-8 rounded-lg inline-block transition duration-300 tracking-wide">
-                EXPLORE DATA
+<!-- Hero Section with Background Image -->
+<section class="hero-bg text-white py-24">
+    <div class="container mx-auto px-6 text-center">
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">Turning Dropouts into Comebacks</h1>
+        <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-light leading-relaxed">
+            "Dropouts aren't numbers; they're stories unwritten, talents untapped, and hopes unfulfilled."
+        </p>
+        <?php if (!isset($_SESSION['user_id'])): ?>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="signin.php" class="bg-accent hover:bg-tertiary text-white font-bold py-3 px-8 rounded-lg inline-block transition duration-300 tracking-wide">
+                Sign In
+            </a>
+            <a href="signup.php" class="bg-transparent border-2 border-accent text-white font-bold py-3 px-8 rounded-lg inline-block transition duration-300 tracking-wide hover:bg-accent/20">
+                Sign Up
             </a>
         </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section id="analysis" class="py-16 bg-secondary text-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold mb-4 tracking-tight">Retention Rate Over Time</h2>
-                <div class="w-24 h-1 bg-accent mx-auto"></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                <div class="stat-card bg-tertiary p-6 rounded-lg">
-                    <h3 class="text-xl font-bold mb-3 tracking-tight">Primary (Grades 1-5)</h3>
-                    <p class="text-light text-sm leading-relaxed">
-                        <span class="text-accent">87.0% → 95.4% → 85.4%</span> (2019-20 to 2023-24)
-                    </p>
-                </div>
-                <div class="stat-card bg-tertiary p-6 rounded-lg">
-                    <h3 class="text-xl font-bold mb-3 tracking-tight">Elementary (Grades 1-8)</h3>
-                    <p class="text-light text-sm leading-relaxed">
-                        <span class="text-accent">74.6% → 81.2% → 78.0%</span> (2019-20 to 2023-24)
-                    </p>
-                </div>
-                <div class="stat-card bg-tertiary p-6 rounded-lg">
-                    <h3 class="text-xl font-bold mb-3 tracking-tight">Secondary (Grades 1-10)</h3>
-                    <p class="text-light text-sm leading-relaxed">
-                        <span class="text-accent">59.6% → 65.5% → 63.8%</span> (2019-20 to 2023-24)
-                    </p>
-                </div>
-                <div class="stat-card bg-tertiary p-6 rounded-lg">
-                    <h3 class="text-xl font-bold mb-3 tracking-tight">Higher Secondary (1-12)</h3>
-                    <p class="text-light text-sm leading-relaxed">
-                        <span class="text-accent">40.2% → 45.6%</span> (2019-20 to 2023-24)
-                    </p>
-                </div>
-            </div>
-            <p class="text-light text-center max-w-4xl mx-auto leading-relaxed">
-                Student retention rates in India's education system reflect various institutional challenges. 
-                Before analyzing trends, let's examine the core concepts.
-            </p>
+        <?php else: ?>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="interventions.php" class="bg-accent hover:bg-tertiary text-white font-bold py-3 px-8 rounded-lg inline-block transition duration-300 tracking-wide">
+                View Interventions
+            </a>
+            <a href="students.php" class="bg-transparent border-2 border-accent text-white font-bold py-3 px-8 rounded-lg inline-block transition duration-300 tracking-wide hover:bg-accent/20">
+                Manage Students
+            </a>
         </div>
-    </section>
+        <?php endif; ?>
+    </div>
+</section>
 
-    <!-- Data Visualization Section -->
-    <div class="relative overflow-hidden min-h-[60vh] flex items-center">
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/10 to-transparent opacity-20"></div>
-        <div class="max-w-6xl mx-auto px-6 relative z-10">
-            <h1 class="text-6xl md:text-8xl font-bold mb-6 text-accent">DROPOUT ANALYSIS</h1>
-            <p class="text-xl md:text-2xl text-light max-w-2xl">
-                Visualizing patterns in student retention and risk factors
-            </p>
+<!-- Stats Section -->
+<section class="py-16 bg-secondary text-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold mb-4 tracking-tight">System Overview</h2>
+            <div class="w-24 h-1 bg-accent mx-auto"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="stat-card bg-tertiary p-6 rounded-lg">
+                <div class="flex items-center justify-center mb-4">
+                    <i class="fas fa-user-graduate text-4xl text-accent"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 tracking-tight">Total Students</h3>
+                <p class="text-3xl font-bold text-accent"><?php echo number_format($stats['total_students']); ?></p>
+                <p class="text-light text-sm mt-2">Students in the system</p>
+            </div>
+            <div class="stat-card bg-tertiary p-6 rounded-lg">
+                <div class="flex items-center justify-center mb-4">
+                    <i class="fas fa-exclamation-triangle text-4xl text-accent"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 tracking-tight">At-Risk Students</h3>
+                <p class="text-3xl font-bold text-accent"><?php echo number_format($stats['at_risk']); ?></p>
+                <p class="text-light text-sm mt-2">Students identified as high risk</p>
+            </div>
+            <div class="stat-card bg-tertiary p-6 rounded-lg">
+                <div class="flex items-center justify-center mb-4">
+                    <i class="fas fa-hands-helping text-4xl text-accent"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 tracking-tight">Active Interventions</h3>
+                <p class="text-3xl font-bold text-accent"><?php echo number_format($stats['interventions']); ?></p>
+                <p class="text-light text-sm mt-2">Support programs in progress</p>
+            </div>
         </div>
     </div>
+</section>
 
-    <!-- Data Visualization Section -->
-    <section class="py-16">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row items-center mb-16">
-                <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
-                    <h2 class="text-3xl font-bold mb-6 text-light">Dropout Rate Trends (2015-2025)</h2>
-                    <p class="text-lighter mb-4">
-                        Tracking national dropout rates over time reveals key patterns in educational disengagement. Our system leverages historical data and predictive modeling to identify at-risk students and pinpoint critical intervention periods.
-                    </p>
-                    <p class="text-lighter mb-4">
-                        By analyzing socio-economic factors, academic performance, and school infrastructure, we provide data-driven insights to help institutions implement targeted solutions—financial aid, counseling, and flexible learning options.
-                    </p>
-                    <p class="text-lighter">
-                        With a strategic, evidence-based approach, we aim to reduce dropout rates and build a resilient, inclusive education system where every student thrives.
-                    </p>
+<!-- Features Section -->
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold mb-4 tracking-tight">How It Works</h2>
+            <div class="w-24 h-1 bg-accent mx-auto"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-secondary p-6 rounded-lg">
+                <div class="flex items-center justify-center mb-4">
+                    <i class="fas fa-chart-line text-4xl text-accent"></i>
                 </div>
-                <div class="md:w-1/2 animate-float">
-                    <div class="bg-secondary p-6 rounded-xl border border-tertiary">
-                        <canvas id="dropoutChart" height="300"></canvas>
-                    </div>
-                </div>
+                <h3 class="text-xl font-bold mb-3 tracking-tight">Identify Risk Factors</h3>
+                <p class="text-light leading-relaxed">
+                    Our system analyzes academic performance, attendance, and behavioral data to identify students at risk of dropping out.
+                </p>
             </div>
-            
-            <div class="flex flex-col md:flex-row-reverse items-center">
-                <div class="md:w-1/2 mb-8 md:mb-0 md:pl-8">
-                    <h2 class="text-3xl font-bold mb-6 text-accent">Key Risk Factors</h2>
-                    <ul class="space-y-4 text-lighter">
-                        <li class="flex items-start">
-                            <i class="fas fa-chart-line text-light mt-1 mr-3"></i>
-                            <span>Academic difficulties and poor performance</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-money-bill-wave text-light mt-1 mr-3"></i>
-                            <span>Economic hardship and need to work</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-home text-light mt-1 mr-3"></i>
-                            <span>Lack of family support or engagement</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-users text-light mt-1 mr-3"></i>
-                            <span>Social and behavioral issues</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-chalkboard-teacher text-light mt-1 mr-3"></i>
-                            <span>School climate and teacher relationships</span>
-                        </li>
-                    </ul>
+            <div class="bg-secondary p-6 rounded-lg">
+                <div class="flex items-center justify-center mb-4">
+                    <i class="fas fa-clipboard-list text-4xl text-accent"></i>
                 </div>
-                <div class="md:w-1/2 animate-float">
-                    <div class="bg-secondary p-6 rounded-xl border border-tertiary">
-                        <canvas id="factorsChart" height="300"></canvas>
-                    </div>
+                <h3 class="text-xl font-bold mb-3 tracking-tight">Create Interventions</h3>
+                <p class="text-light leading-relaxed">
+                    Develop targeted support programs based on individual student needs and risk factors.
+                </p>
+            </div>
+            <div class="bg-secondary p-6 rounded-lg">
+                <div class="flex items-center justify-center mb-4">
+                    <i class="fas fa-chart-bar text-4xl text-accent"></i>
                 </div>
+                <h3 class="text-xl font-bold mb-3 tracking-tight">Track Progress</h3>
+                <p class="text-light leading-relaxed">
+                    Monitor the effectiveness of interventions and adjust strategies to improve student outcomes.
+                </p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="bg-secondary text-white py-12">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="text-lg font-semibold mb-4 tracking-tight">DROPOUT ANALYSIS</h3>
-                    <p class="text-light leading-relaxed">
-                        Identifying and supporting at-risk students through data analysis.
-                    </p>
+<!-- Testimonials Section -->
+<section class="py-16 bg-secondary text-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold mb-4 tracking-tight">Success Stories</h2>
+            <div class="w-24 h-1 bg-accent mx-auto"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-tertiary p-6 rounded-lg">
+                <div class="flex items-start mb-4">
+                    <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mr-4">
+                        <i class="fas fa-user text-2xl text-accent"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold tracking-tight">Rahul Sharma</h3>
+                        <p class="text-light">Former At-Risk Student</p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4 tracking-tight">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-light hover:text-white font-medium">Home</a></li>
-                        <li><a href="#" class="text-light hover:text-white font-medium">Analysis</a></li>
-                        <li><a href="#" class="text-light hover:text-white font-medium">Interventions</a></li>
-                        <li><a href="#" class="text-light hover:text-white font-medium">About Us</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4 tracking-tight">Resources</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-light hover:text-white font-medium">Research Papers</a></li>
-                        <li><a href="#" class="text-light hover:text-white font-medium">Kaggle</a></li>
-                        <li><a href="#" class="text-light hover:text-white font-medium">Webinars</a></li>
-                        <li><a href="#" class="text-light hover:text-white font-medium">FAQ</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4 tracking-tight">Contact Us</h3>
-                    <ul class="space-y-2 text-light">
-                        <li class="flex items-start">
-                            <i class="fas fa-envelope mt-1 mr-2"></i>
-                            <span>info@dropoutanalysis.edu</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-phone-alt mt-1 mr-2"></i>
-                            <span>+91 7836900000</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
-                            <span>Lovely Professional University<br>Phagwara, Punjab</span>
-                        </li>
-                    </ul>
-                </div>
+                <p class="text-lighter italic">"The intervention program helped me overcome my academic challenges. I'm now pursuing my dream career in engineering."</p>
             </div>
-            <div class="border-t border-tertiary mt-12 pt-8 text-center text-light">
-                <p>&copy; <?= date('Y') ?> Student Dropout Analysis System. All rights reserved.</p>
+            <div class="bg-tertiary p-6 rounded-lg">
+                <div class="flex items-start mb-4">
+                    <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mr-4">
+                        <i class="fas fa-user text-2xl text-accent"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold tracking-tight">Priya Patel</h3>
+                        <p class="text-light">School Counselor</p>
+                    </div>
+                </div>
+                <p class="text-lighter italic">"This system has transformed how we identify and support at-risk students. Our dropout rate has decreased by 35% in just one year."</p>
             </div>
         </div>
-    </footer>
+    </div>
+</section>
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Corrected Dropout Rate Chart with 2015-2025 data
-        const dropoutCtx = document.getElementById('dropoutChart').getContext('2d');
-        const dropoutChart = new Chart(dropoutCtx, {
-            type: 'line',
-            data: {
-                labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
-                datasets: [{
-                    label: 'National Dropout Rate %',
-                    data: [5.2, 5.0, 5.1, 5.4, 5.7, 6.0, 6.2, 6.3, 6.1, 5.8, 5.5],
-                    borderColor: '#9BAAAB',
-                    backgroundColor: 'rgba(74, 92, 106, 0.1)',
-                    borderWidth: 3,
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#CCD0CF',
-                    pointBorderColor: '#4A5C6A',
-                    pointRadius: 5,
-                    pointHoverRadius: 7
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#4A5C6A',
-                            font: {
-                                family: 'Space Grotesk',
-                                weight: '600'
-                            },
-                            padding: 20
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: '#11212D',
-                        titleColor: '#CCD0CF',
-                        bodyColor: '#9BAAAB',
-                        borderColor: '#4A5C6A',
-                        borderWidth: 1,
-                        padding: 12,
-                        titleFont: {
-                            family: 'Space Grotesk',
-                            weight: '600',
-                            size: 14
-                        },
-                        bodyFont: {
-                            family: 'Space Grotesk',
-                            size: 12
-                        },
-                        displayColors: false,
-                        callbacks: {
-                            label: function(context) {
-                                return context.parsed.y.toFixed(1) + '%';
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        min: 4.5,
-                        max: 6.5,
-                        grid: {
-                            color: '#233745',
-                            borderDash: [3, 3]
-                        },
-                        ticks: {
-                            color: '#4A5C6A',
-                            callback: function(value) {
-                                return value + '%';
-                            }
-                        },
-                        border: {
-                            dash: [3, 3]
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#4A5C6A'
-                        },
-                        border: {
-                            dash: [3, 3]
-                        }
-                    }
-                }
-            }
-        });
+<!-- CTA Section -->
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl font-bold mb-6 tracking-tight">Ready to Make a Difference?</h2>
+        <p class="text-xl mb-8 max-w-3xl mx-auto text-light leading-relaxed">
+            Join our mission to prevent student dropouts and create brighter futures for all students.
+        </p>
+        <?php if (!isset($_SESSION['user_id'])): ?>
+        <a href="signup.php" class="bg-accent hover:bg-tertiary text-white font-bold py-3 px-8 rounded-lg inline-block transition duration-300 tracking-wide">
+            Get Started Today
+        </a>
+        <?php else: ?>
+        <a href="students.php" class="bg-accent hover:bg-tertiary text-white font-bold py-3 px-8 rounded-lg inline-block transition duration-300 tracking-wide">
+            Manage Students
+        </a>
+        <?php endif; ?>
+    </div>
+</section>
 
-        // Risk Factors Chart
-        const factorsCtx = document.getElementById('factorsChart').getContext('2d');
-        const factorsChart = new Chart(factorsCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Academic', 'Economic', 'Family', 'Social', 'School'],
-                datasets: [{
-                    data: [35, 25, 20, 15, 5],
-                    backgroundColor: [
-                        '#08141B',
-                        '#CCD0CF',
-                        '#233745',
-                        '#4A5C6A',
-                        '#9BAAAB'
-                    ],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        labels: {
-                            color: '#4A5C6A',
-                            padding: 20,
-                            boxWidth: 15,
-                            font: {
-                                family: 'Space Grotesk',
-                                weight: '600'
-                            }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: '#11212D',
-                        titleColor: '#CCD0CF',
-                        bodyColor: '#9BAAAB',
-                        borderColor: '#4A5C6A',
-                        borderWidth: 1,
-                        padding: 12,
-                        titleFont: {
-                            family: 'Space Grotesk',
-                            weight: '600',
-                            size: 14
-                        },
-                        bodyFont: {
-                            family: 'Space Grotesk',
-                            size: 12
-                        },
-                        callbacks: {
-                            label: function(context) {
-                                return context.label + ': ' + context.raw + '%';
-                            }
-                        }
-                    }
-                },
-                cutout: '65%'
-            }
-        });
-    </script>
+<!-- Footer -->
+<?php include 'includes/footer.php'; ?>
+
+<!-- Authentication Modal -->
+<?php include 'includes/auth_modal.php'; ?>
+
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+    });
+    
+    // Show auth modal if redirected from a restricted page
+    <?php if(isset($_GET['auth_required']) && $_GET['auth_required'] == 1): ?>
+    document.addEventListener('DOMContentLoaded', function() {
+        showAuthModal();
+    });
+    <?php endif; ?>
+</script>
 </body>
 </html>

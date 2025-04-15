@@ -1,15 +1,19 @@
 <?php
 session_start();
 
+// Include authentication check
+require_once 'includes/auth_check.php';
+
 // State data with your provided information
 $states = [
     'Odisha' => [
         'dropout_rates' => [
-            'primary' => 0.0,
-            'upper_primary' => 0.2,
-            'secondary' => 27.3,
-            'secondary_high' => 49.9,
-            'secondary_govt' => 27.0
+            'primary' => 0.8,
+            'upper_primary' => 4.5,
+            'secondary' => 23.6,
+            'secondary_high' => 28.3,
+            'girls_secondary' => 25.8,
+            'boys_secondary' => 21.4
         ],
         'causes' => [
             ['name' => 'Economic Constraints', 'percentage' => 35],
@@ -25,15 +29,15 @@ $states = [
             'Infrastructure Development',
             'Safety Measures'
         ],
-        'image' => '/img/odishamap.png'
+        'image' => 'img/odishamap.png'
     ],
     'Bihar' => [
         'dropout_rates' => [
-            'primary' => 8.9,
-            'upper_primary' => 25.0,
-            'secondary' => 25.0,
-            'girls_secondary' => 40.3,
-            'boys_secondary' => 38.8
+            'primary' => 2.3,
+            'upper_primary' => 8.9,
+            'secondary' => 21.4,
+            'girls_secondary' => 24.6,
+            'boys_secondary' => 18.2
         ],
         'causes' => [
             ['name' => 'Economic Constraints', 'percentage' => 40],
@@ -49,15 +53,15 @@ $states = [
             'Policy Interventions',
             'Vocational Training'
         ],
-        'image' => '/img/bihar.png'
+        'image' => 'img/bihar.png'
     ],
     'Assam' => [
         'dropout_rates' => [
-            'lower_primary' => 8.49,
-            'upper_primary' => 10.33,
-            'secondary' => 20.25,
-            'south_salmara' => 32.39,
-            'sivasagar' => 4.03
+            'lower_primary' => 4.3,
+            'upper_primary' => 3.4,
+            'secondary' => 32.3,
+            'girls_secondary' => 35.8,
+            'boys_secondary' => 28.8
         ],
         'causes' => [
             ['name' => 'Economic Constraints', 'percentage' => 30],
@@ -73,16 +77,16 @@ $states = [
             'Transport Facilities',
             'Curriculum Revitalization'
         ],
-        'image' => '/img/assam.png'
+        'image' => 'img/assam.png'
     ],
     'Gujarat' => [
         'dropout_rates' => [
             'primary' => 1.0,
-            'upper_primary' => 4.5,
-            'secondary' => 17.9,
-            'boys_15_16' => 9.4,
-            'girls_15_16' => 10.5,
-            'chhota_udaipur' => 82.91
+            'upper_primary' => 5.2,
+            'secondary' => 23.7,
+            'chhota_udaipur' => 42.5,
+            'girls_secondary' => 26.3,
+            'boys_secondary' => 21.1
         ],
         'causes' => [
             ['name' => 'Economic Constraints', 'percentage' => 35],
@@ -98,15 +102,15 @@ $states = [
             'Infrastructure Development',
             'Girls Education Programs'
         ],
-        'image' => '/img/guju.png'
+        'image' => 'img/guju.png'
     ],
     'Karnataka' => [
         'dropout_rates' => [
-            'primary' => 1.7,
-            'upper_primary' => 2.7,
-            'secondary' => 22.09,
-            'out_of_school' => 9326,
-            'bangalore_south' => 2028
+            'primary' => 1.2,
+            'upper_primary' => 2.5,
+            'secondary' => 16.8,
+            'girls_secondary' => 18.9,
+            'boys_secondary' => 14.7
         ],
         'causes' => [
             ['name' => 'Migration', 'percentage' => 30],
@@ -122,9 +126,147 @@ $states = [
             'Infrastructure Development',
             'Migration Support'
         ],
-        'image' => '/img/karna.png'
+        'image' => 'img/karna.png'
+    ],
+    'Maharashtra' => [
+        'dropout_rates' => [
+            'primary' => 0.0,
+            'upper_primary' => 1.1,
+            'secondary' => 15.2,
+            'girls_secondary' => 16.8,
+            'boys_secondary' => 13.6
+        ],
+        'causes' => [
+            ['name' => 'Economic Constraints', 'percentage' => 30],
+            ['name' => 'Migration', 'percentage' => 25],
+            ['name' => 'Quality of Education', 'percentage' => 20],
+            ['name' => 'Infrastructure', 'percentage' => 15],
+            ['name' => 'Social Factors', 'percentage' => 10]
+        ],
+        'strategies' => [
+            'Financial Assistance',
+            'Community Engagement',
+            'Curriculum Enhancement',
+            'Infrastructure Development',
+            'Migration Support'
+        ],
+        'image' => 'img/maharashtra.png'
+    ],
+    'Tamil Nadu' => [
+        'dropout_rates' => [
+            'primary' => 1.1,
+            'upper_primary' => 0.4,
+            'secondary' => 9.6,
+            'girls_secondary' => 10.2,
+            'boys_secondary' => 9.0
+        ],
+        'causes' => [
+            ['name' => 'Economic Constraints', 'percentage' => 35],
+            ['name' => 'Gender Disparities', 'percentage' => 20],
+            ['name' => 'Quality of Education', 'percentage' => 20],
+            ['name' => 'Infrastructure', 'percentage' => 15],
+            ['name' => 'Social Factors', 'percentage' => 10]
+        ],
+        'strategies' => [
+            'Financial Assistance',
+            'Community Engagement',
+            'Curriculum Enhancement',
+            'Infrastructure Development',
+            'Girls Education Programs'
+        ],
+        'image' => 'img/tamilnadu.png'
+    ],
+    'Uttar Pradesh' => [
+        'dropout_rates' => [
+            'primary' => 2.7,
+            'upper_primary' => 2.1,
+            'secondary' => 14.4,
+            'girls_secondary' => 16.8,
+            'boys_secondary' => 12.0
+        ],
+        'causes' => [
+            ['name' => 'Economic Constraints', 'percentage' => 40],
+            ['name' => 'Gender Inequality', 'percentage' => 25],
+            ['name' => 'Child Marriage', 'percentage' => 15],
+            ['name' => 'Infrastructure Deficiencies', 'percentage' => 15],
+            ['name' => 'Cultural Expectations', 'percentage' => 5]
+        ],
+        'strategies' => [
+            'Financial Support',
+            'Community Awareness',
+            'Infrastructure Enhancement',
+            'Policy Interventions',
+            'Vocational Training'
+        ],
+        'image' => 'img/up.png'
+    ],
+    'Rajasthan' => [
+        'dropout_rates' => [
+            'primary' => 2.9,
+            'upper_primary' => 1.5,
+            'secondary' => 12.3,
+            'girls_secondary' => 14.5,
+            'boys_secondary' => 10.1
+        ],
+        'causes' => [
+            ['name' => 'Economic Constraints', 'percentage' => 35],
+            ['name' => 'Gender Inequality', 'percentage' => 30],
+            ['name' => 'Child Marriage', 'percentage' => 15],
+            ['name' => 'Infrastructure Deficiencies', 'percentage' => 15],
+            ['name' => 'Cultural Expectations', 'percentage' => 5]
+        ],
+        'strategies' => [
+            'Financial Support',
+            'Community Awareness',
+            'Infrastructure Enhancement',
+            'Policy Interventions',
+            'Girls Education Programs'
+        ],
+        'image' => 'img/rajasthan.png'
+    ],
+    'Madhya Pradesh' => [
+        'dropout_rates' => [
+            'primary' => 0.8,
+            'upper_primary' => 4.1,
+            'secondary' => 23.2,
+            'girls_secondary' => 25.8,
+            'boys_secondary' => 20.6
+        ],
+        'causes' => [
+            ['name' => 'Economic Constraints', 'percentage' => 35],
+            ['name' => 'Gender Inequality', 'percentage' => 25],
+            ['name' => 'Child Marriage', 'percentage' => 15],
+            ['name' => 'Infrastructure Deficiencies', 'percentage' => 15],
+            ['name' => 'Cultural Expectations', 'percentage' => 10]
+        ],
+        'strategies' => [
+            'Financial Support',
+            'Community Awareness',
+            'Infrastructure Enhancement',
+            'Policy Interventions',
+            'Girls Education Programs'
+        ],
+        'image' => 'img/mp.png'
     ]
 ];
+
+// Calculate national averages for pie chart
+$nationalAverages = [
+    'primary' => 0,
+    'upper_primary' => 0,
+    'secondary' => 0
+];
+
+$stateCount = count($states);
+foreach ($states as $state => $data) {
+    $nationalAverages['primary'] += $data['dropout_rates']['primary'] ?? $data['dropout_rates']['lower_primary'] ?? 0;
+    $nationalAverages['upper_primary'] += $data['dropout_rates']['upper_primary'] ?? 0;
+    $nationalAverages['secondary'] += $data['dropout_rates']['secondary'] ?? 0;
+}
+
+$nationalAverages['primary'] = round($nationalAverages['primary'] / $stateCount, 1);
+$nationalAverages['upper_primary'] = round($nationalAverages['upper_primary'] / $stateCount, 1);
+$nationalAverages['secondary'] = round($nationalAverages['secondary'] / $stateCount, 1);
 ?>
 
 <!DOCTYPE html>
@@ -132,7 +274,7 @@ $states = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>State Dropout Analysis | 5 Key States</title>
+    <title>State Dropout Analysis | Indian States</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -273,6 +415,12 @@ $states = [
             background-size: cover;
             background-position: center;
         }
+        .dropdown-menu {
+            display: none;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
     </style>
 </head>
 <body class="bg-lighter font-sans">
@@ -285,13 +433,27 @@ $states = [
                     <span class="font-semibold text-xl">State Dropout Analysis</span>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.php" class="text-light hover:text-white">Home</a>
-                    <a href="#" class="text-light hover:text-white">State Data</a>
-                    <a href="#" class="text-light hover:text-white">National Trends</a>
-                    <?php if(isset($_SESSION['user_id'])): ?>
-                        <a href="dashboard.php" class="bg-accent hover:bg-tertiary px-4 py-2 rounded">Dashboard</a>
+                    <a href="index.php" class="text-light hover:text-white font-medium">Home</a>
+                    <a href="analysis.php" class="text-white font-medium">Analysis</a>
+                    <a href="interventions.php" class="text-light hover:text-white font-medium">Interventions</a>
+                    <a href="about.php" class="text-light hover:text-white font-medium">About Us</a>
+                    <?php if(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])): ?>
+                        <div class="relative">
+                            <button id="profileDropdownBtn" class="flex items-center space-x-2 bg-accent hover:bg-tertiary px-4 py-2 rounded font-medium">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Profile</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div id="profileDropdownMenu" class="dropdown-menu absolute right-0 mt-2 w-48 bg-secondary rounded-md shadow-lg py-2 z-10">
+                                <a href="profile.php" class="block px-4 py-2 text-sm text-lighter hover:bg-tertiary">My Profile</a>
+                                <a href="logout.php" class="block px-4 py-2 text-sm text-lighter hover:bg-tertiary">Logout</a>
+                            </div>
+                        </div>
                     <?php else: ?>
-                        <a href="login.php" class="bg-accent hover:bg-tertiary px-4 py-2 rounded">Login</a>
+                        <div class="flex items-center space-x-4">
+                            <a href="signin.php" class="text-accent hover:text-white font-medium">Sign In</a>
+                            <a href="signup.php" class="bg-accent hover:bg-tertiary px-4 py-2 rounded font-medium">Sign Up</a>
+                        </div>
                     <?php endif; ?>
                 </div>
                 <button class="md:hidden text-white focus:outline-none">
@@ -304,17 +466,46 @@ $states = [
     <!-- Main Content -->
     <div class="container mx-auto px-6 py-12">
         <h1 class="text-4xl font-bold text-center text-primary mb-4">State-Wise Dropout Analysis</h1>
-        <p class="text-xl text-center text-secondary mb-12">Exploring dropout rates in 5 key Indian states</p>
+        <p class="text-xl text-center text-secondary mb-12">Exploring dropout rates across Indian states</p>
+        
+        <!-- National Overview -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-16">
+            <h2 class="text-2xl font-bold text-primary mb-6">National Overview</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="h-80">
+                    <canvas id="nationalPieChart"></canvas>
+                </div>
+                <div class="space-y-4">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="font-semibold text-secondary mb-2">Primary Education (1-5)</h3>
+                        <p class="text-gray-700">Average dropout rate: <?= $nationalAverages['primary'] ?>%</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="font-semibold text-secondary mb-2">Upper Primary (6-8)</h3>
+                        <p class="text-gray-700">Average dropout rate: <?= $nationalAverages['upper_primary'] ?>%</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="font-semibold text-secondary mb-2">Secondary (9-10)</h3>
+                        <p class="text-gray-700">Average dropout rate: <?= $nationalAverages['secondary'] ?>%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <!-- State Cards Grid -->
         <div class="states-grid mb-16">
             <?php 
-            // Reorder states to show Odisha, Gujarat, Karnataka first
+            // Reorder states to show all states
             $orderedStates = [
                 'Odisha' => $states['Odisha'],
+                'Bihar' => $states['Bihar'],
+                'Uttar Pradesh' => $states['Uttar Pradesh'],
+                'Rajasthan' => $states['Rajasthan'],
+                'Madhya Pradesh' => $states['Madhya Pradesh'],
                 'Gujarat' => $states['Gujarat'],
                 'Karnataka' => $states['Karnataka'],
-                'Bihar' => $states['Bihar'],
+                'Maharashtra' => $states['Maharashtra'],
+                'Tamil Nadu' => $states['Tamil Nadu'],
                 'Assam' => $states['Assam']
             ];
             
@@ -381,85 +572,35 @@ $states = [
 
                         <!-- Tab Content -->
                         <div class="p-8">
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                                <!-- Causes Section -->
-                                <div>
-                                    <h3 class="text-2xl font-bold text-primary mb-6">Primary Causes</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Dropout Distribution Pie Chart -->
+                                <div class="bg-white p-6 rounded-lg shadow-lg">
+                                    <h4 class="text-xl font-semibold text-secondary mb-4">Dropout Distribution</h4>
+                                    <div class="h-64">
+                                        <canvas id="<?= strtolower($state) ?>-pie-chart"></canvas>
+                                    </div>
+                                </div>
+                                <!-- Gender-wise Dropout Rates -->
+                                <div class="bg-white p-6 rounded-lg shadow-lg">
+                                    <h4 class="text-xl font-semibold text-secondary mb-4">Gender-wise Analysis</h4>
+                                    <div class="h-64">
+                                        <canvas id="<?= strtolower($state) ?>-gender-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <!-- Causes Chart -->
+                                <div class="bg-white p-6 rounded-lg shadow-lg">
+                                    <h4 class="text-xl font-semibold text-secondary mb-4">Primary Causes</h4>
                                     <div class="h-64">
                                         <canvas id="<?= strtolower($state) ?>CausesChart"></canvas>
                                     </div>
-                                    <div class="mt-6 space-y-4">
-                                        <?php foreach ($data['causes'] as $cause): ?>
-                                            <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-accent">
-                                                <h4 class="font-semibold text-secondary mb-1">
-                                                    <?= $cause['name'] ?> (<?= $cause['percentage'] ?>%)
-                                                </h4>
-                                                <p class="text-gray-700">
-                                                    <?php 
-                                                        switch($cause['name']) {
-                                                            case 'Economic Constraints':
-                                                                echo 'Financial hardships compel students to leave school and support families.';
-                                                                break;
-                                                            case 'Domestic Responsibilities':
-                                                                echo 'Household duties, especially for girls, take precedence over education.';
-                                                                break;
-                                                            case 'Gender Inequality':
-                                                                echo 'Societal norms prioritize boys\' education over girls\'.';
-                                                                break;
-                                                            case 'Distance to School':
-                                                                echo 'Long distances and inadequate transportation deter attendance.';
-                                                                break;
-                                                            case 'Migration':
-                                                                echo 'Families moving for work disrupts children\'s education.';
-                                                                break;
-                                                            default:
-                                                                echo 'Significant contributor to dropout rates in this state.';
-                                                        }
-                                                    ?>
-                                                </p>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
                                 </div>
-
-                                <!-- Solutions Section -->
-                                <div>
-                                    <h3 class="text-2xl font-bold text-primary mb-6">Prevention Strategies</h3>
+                                <!-- Strategies Chart -->
+                                <div class="bg-white p-6 rounded-lg shadow-lg">
+                                    <h4 class="text-xl font-semibold text-secondary mb-4">Recommended Strategies</h4>
                                     <div class="h-64">
                                         <canvas id="<?= strtolower($state) ?>StrategiesChart"></canvas>
-                                    </div>
-                                    <div class="mt-6 space-y-4">
-                                        <?php foreach ($data['strategies'] as $strategy): ?>
-                                            <div class="p-4 bg-gray-50 rounded-lg">
-                                                <h4 class="font-semibold text-secondary mb-1 flex items-center">
-                                                    <i class="fas fa-check-circle text-accent mr-2"></i>
-                                                    <?= $strategy ?>
-                                                </h4>
-                                                <p class="text-gray-700">
-                                                    <?php 
-                                                        switch($strategy) {
-                                                            case 'Financial Assistance':
-                                                                echo 'Scholarships and aid to alleviate economic burdens on families.';
-                                                                break;
-                                                            case 'Community Engagement':
-                                                                echo 'Awareness campaigns about education importance, especially for girls.';
-                                                                break;
-                                                            case 'Curriculum Enhancement':
-                                                                echo 'Making education more engaging and relevant to students\' lives.';
-                                                                break;
-                                                            case 'Infrastructure Development':
-                                                                echo 'Improving school facilities and accessibility.';
-                                                                break;
-                                                            case 'Safety Measures':
-                                                                echo 'Policies ensuring student safety, particularly for girls.';
-                                                                break;
-                                                            default:
-                                                                echo 'Targeted intervention to address specific dropout factors.';
-                                                        }
-                                                    ?>
-                                                </p>
-                                            </div>
-                                        <?php endforeach; ?>
                                     </div>
                                 </div>
                             </div>
@@ -468,9 +609,6 @@ $states = [
                             <div class="stats-section">
                                 <h3 class="stats-title">Key Statistics</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div class="chart-container">
-                                        <canvas id="<?= strtolower($state) ?>TrendsChart"></canvas>
-                                    </div>
                                     <div class="findings-container">
                                         <h4 class="text-xl font-semibold text-secondary mb-4">Notable Findings</h4>
                                         <ul class="space-y-3 text-gray-700">
@@ -531,205 +669,326 @@ $states = [
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Initialize all charts
+        // Store chart instances
+        const chartInstances = {};
+
+        // Initialize national pie chart
         document.addEventListener('DOMContentLoaded', function() {
-            <?php foreach ($states as $state => $data): ?>
-                // Causes Chart
-                new Chart(
-                    document.getElementById('<?= strtolower($state) ?>CausesChart').getContext('2d'),
-                    {
-                        type: 'doughnut',
-                        data: {
-                            labels: <?= json_encode(array_column($data['causes'], 'name')) ?>,
-                            datasets: [{
-                                data: <?= json_encode(array_column($data['causes'], 'percentage')) ?>,
-                                backgroundColor: [
-                                    '#08141B', '#11212D', '#233745', '#4A5C6A', '#9BAAAB'
-                                ],
-                                borderWidth: 0
-                            }]
+            const ctx = document.getElementById('nationalPieChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Primary (1-5)', 'Upper Primary (6-8)', 'Secondary (9-10)'],
+                    datasets: [{
+                        data: [
+                            <?= $nationalAverages['primary'] ?>,
+                            <?= $nationalAverages['upper_primary'] ?>,
+                            <?= $nationalAverages['secondary'] ?>
+                        ],
+                        backgroundColor: [
+                            'rgba(74, 92, 106, 0.7)',
+                            'rgba(35, 55, 69, 0.7)',
+                            'rgba(8, 20, 27, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(74, 92, 106, 1)',
+                            'rgba(35, 55, 69, 1)',
+                            'rgba(8, 20, 27, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'National Average Dropout Rates',
+                            font: {
+                                family: 'Space Grotesk',
+                                size: 16,
+                                weight: '600'
+                            }
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Primary Causes of Dropouts',
-                                    font: {
-                                        size: 16,
-                                        family: 'Space Grotesk',
-                                        weight: '600'
-                                    },
-                                    padding: {
-                                        top: 10,
-                                        bottom: 20
-                                    }
-                                },
-                                legend: { 
-                                    position: 'right',
-                                    labels: {
-                                        font: {
-                                            family: 'Space Grotesk'
-                                        }
-                                    }
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    family: 'Space Grotesk'
                                 }
                             }
                         }
                     }
-                );
-
-                // Strategies Chart
-                new Chart(
-                    document.getElementById('<?= strtolower($state) ?>StrategiesChart').getContext('2d'),
-                    {
-                        type: 'bar',
-                        data: {
-                            labels: <?= json_encode($data['strategies']) ?>,
-                            datasets: [{
-                                label: 'Impact Potential',
-                                data: [30, 25, 20, 15, 10],
-                                backgroundColor: [
-                                    'rgba(8, 20, 27, 0.7)',
-                                    'rgba(17, 33, 45, 0.7)',
-                                    'rgba(35, 55, 69, 0.7)',
-                                    'rgba(74, 92, 106, 0.7)',
-                                    'rgba(155, 170, 171, 0.7)'
-                                ],
-                                borderColor: [
-                                    '#08141B', '#11212D', '#233745', '#4A5C6A', '#9BAAAB'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Strategy Impact Potential',
-                                    font: {
-                                        size: 16,
-                                        family: 'Space Grotesk',
-                                        weight: '600'
-                                    },
-                                    padding: {
-                                        top: 10,
-                                        bottom: 20
-                                    }
-                                },
-                                legend: { display: false }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    title: { 
-                                        display: true, 
-                                        text: 'Impact Score',
-                                        font: {
-                                            family: 'Space Grotesk',
-                                            weight: '600'
-                                        }
-                                    },
-                                    ticks: {
-                                        font: {
-                                            family: 'Space Grotesk'
-                                        }
-                                    }
-                                },
-                                x: {
-                                    ticks: {
-                                        font: {
-                                            family: 'Space Grotesk'
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                );
-
-                // Trends Chart
-                new Chart(
-                    document.getElementById('<?= strtolower($state) ?>TrendsChart').getContext('2d'),
-                    {
-                        type: 'line',
-                        data: {
-                            labels: ['Primary', 'Upper Primary', 'Secondary'],
-                            datasets: [{
-                                label: 'Dropout Rate %',
-                                data: [
-                                    <?= $data['dropout_rates']['primary'] ?? $data['dropout_rates']['lower_primary'] ?? 0 ?>,
-                                    <?= $data['dropout_rates']['upper_primary'] ?? 0 ?>,
-                                    <?= $data['dropout_rates']['secondary'] ?? 0 ?>
-                                ],
-                                borderColor: '#4A5C6A',
-                                backgroundColor: 'rgba(74, 92, 106, 0.1)',
-                                tension: 0.3,
-                                fill: true
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Dropout Rates by Education Level',
-                                    font: {
-                                        size: 16,
-                                        family: 'Space Grotesk',
-                                        weight: '600'
-                                    },
-                                    padding: {
-                                        top: 10,
-                                        bottom: 20
-                                    }
-                                },
-                                legend: {
-                                    labels: {
-                                        font: {
-                                            family: 'Space Grotesk'
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    title: { 
-                                        display: true, 
-                                        text: 'Dropout Rate %',
-                                        font: {
-                                            family: 'Space Grotesk',
-                                            weight: '600'
-                                        }
-                                    },
-                                    ticks: {
-                                        font: {
-                                            family: 'Space Grotesk'
-                                        }
-                                    }
-                                },
-                                x: {
-                                    ticks: {
-                                        font: {
-                                            family: 'Space Grotesk'
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                );
-            <?php endforeach; ?>
+                }
+            });
         });
-        
+
+        // Function to initialize charts for a state
+        function initializeCharts(state, data) {
+            const stateLower = state.toLowerCase();
+            
+            // Dropout Distribution Pie Chart
+            if (chartInstances[stateLower + 'Pie']) {
+                chartInstances[stateLower + 'Pie'].destroy();
+            }
+            chartInstances[stateLower + 'Pie'] = new Chart(
+                document.getElementById(stateLower + '-pie-chart').getContext('2d'),
+                {
+                    type: 'pie',
+                    data: {
+                        labels: ['Primary (1-5)', 'Upper Primary (6-8)', 'Secondary (9-10)'],
+                        datasets: [{
+                            data: [
+                                data.dropout_rates.primary ?? data.dropout_rates.lower_primary ?? 0,
+                                data.dropout_rates.upper_primary ?? 0,
+                                data.dropout_rates.secondary ?? 0
+                            ],
+                            backgroundColor: [
+                                'rgba(74, 92, 106, 0.7)',
+                                'rgba(35, 55, 69, 0.7)',
+                                'rgba(8, 20, 27, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(74, 92, 106, 1)',
+                                'rgba(35, 55, 69, 1)',
+                                'rgba(8, 20, 27, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Dropout Distribution by Education Level',
+                                font: {
+                                    family: 'Space Grotesk',
+                                    size: 16,
+                                    weight: '600'
+                                }
+                            },
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    font: {
+                                        family: 'Space Grotesk'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+            // Gender-wise Dropout Chart
+            if (chartInstances[stateLower + 'Gender']) {
+                chartInstances[stateLower + 'Gender'].destroy();
+            }
+            chartInstances[stateLower + 'Gender'] = new Chart(
+                document.getElementById(stateLower + '-gender-chart').getContext('2d'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: ['Boys', 'Girls'],
+                        datasets: [{
+                            label: 'Secondary Dropout Rate (%)',
+                            data: [
+                                data.dropout_rates.boys_secondary ?? 0,
+                                data.dropout_rates.girls_secondary ?? 0
+                            ],
+                            backgroundColor: [
+                                'rgba(74, 92, 106, 0.7)',
+                                'rgba(155, 170, 171, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(74, 92, 106, 1)',
+                                'rgba(155, 170, 171, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Gender-wise Dropout Rates',
+                                font: {
+                                    family: 'Space Grotesk',
+                                    size: 16,
+                                    weight: '600'
+                                }
+                            },
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Dropout Rate (%)',
+                                    font: {
+                                        family: 'Space Grotesk',
+                                        weight: '600'
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        family: 'Space Grotesk'
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: 'Space Grotesk'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+            // Causes Chart
+            if (chartInstances[stateLower + 'Causes']) {
+                chartInstances[stateLower + 'Causes'].destroy();
+            }
+            chartInstances[stateLower + 'Causes'] = new Chart(
+                document.getElementById(stateLower + 'CausesChart').getContext('2d'),
+                {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.causes.map(cause => cause.name),
+                        datasets: [{
+                            data: data.causes.map(cause => cause.percentage),
+                            backgroundColor: [
+                                '#08141B', '#11212D', '#233745', '#4A5C6A', '#9BAAAB'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Primary Causes of Dropouts',
+                                font: {
+                                    size: 16,
+                                    family: 'Space Grotesk',
+                                    weight: '600'
+                                },
+                                padding: {
+                                    top: 10,
+                                    bottom: 20
+                                }
+                            },
+                            legend: { 
+                                position: 'right',
+                                labels: {
+                                    font: {
+                                        family: 'Space Grotesk'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+            // Strategies Chart
+            if (chartInstances[stateLower + 'Strategies']) {
+                chartInstances[stateLower + 'Strategies'].destroy();
+            }
+            chartInstances[stateLower + 'Strategies'] = new Chart(
+                document.getElementById(stateLower + 'StrategiesChart').getContext('2d'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: data.strategies,
+                        datasets: [{
+                            label: 'Impact Potential',
+                            data: [30, 25, 20, 15, 10],
+                            backgroundColor: [
+                                'rgba(8, 20, 27, 0.7)',
+                                'rgba(17, 33, 45, 0.7)',
+                                'rgba(35, 55, 69, 0.7)',
+                                'rgba(74, 92, 106, 0.7)',
+                                'rgba(155, 170, 171, 0.7)'
+                            ],
+                            borderColor: [
+                                '#08141B', '#11212D', '#233745', '#4A5C6A', '#9BAAAB'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Strategy Impact Potential',
+                                font: {
+                                    size: 16,
+                                    family: 'Space Grotesk',
+                                    weight: '600'
+                                },
+                                padding: {
+                                    top: 10,
+                                    bottom: 20
+                                }
+                            },
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { 
+                                    display: true, 
+                                    text: 'Impact Score',
+                                    font: {
+                                        family: 'Space Grotesk',
+                                        weight: '600'
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        family: 'Space Grotesk'
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: 'Space Grotesk'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+        }
+
         // Modal functions
         function openStateModal(stateId) {
-            document.getElementById(stateId + '-modal').style.display = 'block';
+            const modal = document.getElementById(stateId + '-modal');
+            modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+            
+            // Initialize charts for this state
+            const state = stateId.charAt(0).toUpperCase() + stateId.slice(1);
+            const stateData = <?= json_encode($states) ?>[state];
+            initializeCharts(state, stateData);
         }
         
         function closeModal(modalId) {
@@ -746,6 +1005,32 @@ $states = [
                 }
             });
         }
+        
+        // Profile dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownBtn = document.getElementById('profileDropdownBtn');
+            const dropdownMenu = document.getElementById('profileDropdownMenu');
+            
+            if (dropdownBtn && dropdownMenu) {
+                // Toggle dropdown on button click
+                dropdownBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('show');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+                
+                // Prevent dropdown from closing when clicking inside it
+                dropdownMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+        });
     </script>
 </body>
 </html>
